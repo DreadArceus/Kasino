@@ -75,7 +75,8 @@ async def choose(ctx,arg11, arg22, arg44):  # arg1=coins arg2=no. on the grid ar
     a=int(arg22)
     e=[':one:',':two:',':three:',':four:',':five:',':six:',':seven:',':eight:',':nine:']
     
-    b=random.randint(1,9)
+    emoji='<:python3:788673802300686347>'
+    b=hiddenc
     tempvaluuu=e[b-1]
     e[b-1]=':coin:'
     if a>=1 and a<=9:
@@ -101,9 +102,10 @@ async def choose(ctx,arg11, arg22, arg44):  # arg1=coins arg2=no. on the grid ar
             await ctx.send(t[int(arg44)] + ' is out')
         else:
             await ctx.send(t[int(arg44)] + ' your balance has been updated')
-
-            coins[int(arg44)] = int(temp66)
-            await ctx.send(temp44)
+            
+            
+        coins[int(arg44)] = int(temp66)
+       
 
     else:
         await ctx.send('you really thought that would work?')
@@ -118,4 +120,4 @@ async def b(ctx, arg):
 async def i(ctx):
     await ctx.send(t)
 
-custom.run('tokenhere')
+custom.run('token here')
