@@ -63,21 +63,37 @@ async def f(ctx, arg1, arg2, arg3):  # arg1=coins arg3=id
 
     else:
         await ctx.send('you really thought that would work?')
-
+@custom.command()
+async def game(ctx):
+    emoji='<:python3:788673802300686347>'
+    e=[':one:',':two:',':three:',':four:',':five:',':six:',':seven:',':eight:',':nine:']
+    await ctx.send( f'there is a coin hidden in these squares chose one \n {e[0]}{e[1]}{e[2]} \n {e[3]}{e[4]}{e[5]} \n {e[6]}{e[7]}{e[8]}')
 
 @custom.command()
-async def g(ctx, arg11, arg22, arg33, arg44):  # arg1=coins arg2=row arg3=column arg4=id
-    tempc = random.choice(grid)
-    tempr = random.choice(grid)
-    if (int(coins[int(arg44)]) - int(arg11)) >= 0:
-
-        if (tempr == arg22) and (tempc == arg33):
-            temp44 = 'you correctly guessed the grid location, coins are added to your balance'
-            outcome = 9*int(arg11)
-
+async def choose(ctx,arg11, arg22, arg44):  # arg1=coins arg2=no. on the grid arg4=id
+    hiddenc=random.randint(1,9)
+    a=int(arg22)
+    e=[':one:',':two:',':three:',':four:',':five:',':six:',':seven:',':eight:',':nine:']
+    
+    emoji='<:python3:788673802300686347>'
+    b=hiddenc
+    tempvaluuu=e[b-1]
+    e[b-1]=':coin:'
+    if a>=1 and a<=9:
+        if a==b:
+            await ctx.send(f' {e[0]}{e[1]}{e[2]} \n {e[3]}{e[4]}{e[5]} \n {e[6]}{e[7]}{e[8]}')
+            await ctx.send(f'{emoji} JACKPOT YOU FOUND THE COIN {emoji}' )
+        
+            outcome=9*int(arg11)
         else:
-            temp44 = 'scammed'
-            outcome = -int(arg11)
+            
+            await ctx.send(f' {e[0]}{e[1]}{e[2]} \n {e[3]}{e[4]}{e[5]} \n {e[6]}{e[7]}{e[8]}')
+            e[b-1]=tempvaluuu
+            await ctx.send(f'coin was in {e[b-1]}')
+            outcome=-int(arg11)
+        e[b-1]=tempvaluuu
+
+    
         temp55 = int(coins[int(arg44)])
         temp66 = (temp55) + int(outcome)  # temp 5 is updated coin values
         if temp66 >= 1000:
@@ -85,10 +101,11 @@ async def g(ctx, arg11, arg22, arg33, arg44):  # arg1=coins arg2=row arg3=column
         elif temp66 == 0:
             await ctx.send(t[int(arg44)] + ' is out')
         else:
-            await ctx.send(t[int(arg44)] + ' your balance has been updated, the correct grid postion was '+tempc + tempr)
-
+            await ctx.send(t[int(arg44)] + ' your balance has been updated')
+            
+            
         coins[int(arg44)] = int(temp66)
-        await ctx.send(temp44)
+       
 
     else:
         await ctx.send('you really thought that would work?')
@@ -103,4 +120,4 @@ async def b(ctx, arg):
 async def i(ctx):
     await ctx.send(t)
 
-custom.run('Token-goes-here')
+custom.run('token here')
