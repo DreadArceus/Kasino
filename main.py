@@ -1,5 +1,11 @@
 import random
 from discord.ext import commands
+import firebase_admin
+from firebase_admin import credentials, firestore, initialize_app
+
+cred = credentials.Certificate('./ServiceAccountKey.json')
+app = firebase_admin.initialize_app(cred)
+db = firestore.client()
 
 
 custom = commands.Bot(command_prefix='!')
@@ -12,29 +18,25 @@ grid = ['1', '2', '3']
 
 @custom.command()
 async def h(ctx):
-    await ctx.send('my commands are,  ')
-    await ctx.send('!p "name" /to play  ')
-    await ctx.send('!b "your id" /shows you your balance  ')
-    await ctx.send('!f "number of coins" "h/t" "id" /creates a coinflip  ')
-    await ctx.send('!g "number of coins" "column" "row" "id"/grid guess  ')
-    await ctx.send('!i  /shows player names and their ids  ')
-    await ctx.send('Rules:Everyone starts with a balance of 300 and first to 1000 coins wins')
-    await ctx.send('if you get addicted to gambling and lose your shit contact @DreadArceus')
+    await ctx.send('The Kasino welcomes you\n!p to register\n!b "your id" /shows you your balance\n!f "number of coins" "h/t" "id" /creates a coinflip\n!g "number of coins" "column" "row" "id"/grid guess\n!i  /shows player names and their ids\nRules:Everyone starts with a balance of 300 and first to 1000 coins wins\nif you get addicted to gambling and lose your shit visit https://www.begambleaware.org')
 
 
 @custom.command()
-async def p(ctx, arg1):
-    temp1 = str(arg1)
-    temprich = 'rich'
-    if temprich in arg1:
-        temp2 = 500  # coins rich mode
-    else:
-        temp2 = 300  # coins
+async def p(ctx):
+    doc_ref = db.collection('users').document(f'{ctx.author.id}')
 
-    coins.append(temp2)
-    t.append(temp1)
-    i = t.index(temp1)
-    await ctx.send(arg1 + '  has been added with ' + str(temp2) + ' coins, your id is ' + str(i))
+    doc = doc_ref.get()
+    if doc.exists:
+        await ctx.send(f'You are already a registered gambler, {doc.to_dict()["username"]}.')
+    else:
+        init_money = 500 if random.randint(1, 20) == 1 else 300
+        doc_ref.set({
+            'username': f'{ctx.author.name}',
+            'name': f'{ctx.author.display_name}',
+            'money': init_money,
+            'loan': 0
+        })
+        await ctx.send(f'You have officially registered as a gambler.{"\nOh seems like you are lucky" if init_money == 500 else ""}')
 
 
 @custom.command()
