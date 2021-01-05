@@ -103,4 +103,53 @@ async def b(ctx, arg):
 async def i(ctx):
     await ctx.send(t)
 
+@custom.command()
+async def slot(ctx):
+
+    await ctx.send("-50 useless coins from ur bank,Best Of Luck!")
+    list=["<:DORIME:791557963282120765>","<:peepoHappy:791557963679793164>",
+    "<:FeelsGeniusMan:788674683687010305>","<:POGGIES:791557965005324340>","<:EZ:791557965441138720>"]
+    l=[]
+
+    for i in range(3):
+        a=random.randint(1,100)
+        if(a>=1 and a<=30):
+            l.append(list[0])
+        elif(a>30 and a<=55):
+            l.append(list[1])
+        elif(a>55 and a<=75):
+            l.append(list[2])
+        elif(a>75 and a<=90):
+            l.append(list[3])
+        elif(a>90 and a<=100):
+            l.append(list[4])
+    
+    s=l[0]+l[1]+l[2]
+    await ctx.send("u rolled--")
+    await ctx.send(s)
+    
+    if(l[0]==l[1] and l[1]==l[2] and l[0]==l[2]):
+        if(l[0]=="<:DORIME:791557963282120765>"):
+            await ctx.send("Spend the 100 coins u won wisely")
+
+        elif(l[0]=="<:peepoHappy:791557963679793164>"):
+            await ctx.send("you just won 300 useless coins")
+
+        elif(l[0]=="<:FeelsGeniusMan:788674683687010305>"):
+            await ctx.send("Awesome,you recieve 600 useless coins ")
+
+        elif(l[0]=="<:POGGIES:791557965005324340>"):
+            await ctx.send("Yeah Boi,u go home with 1K useless coins")
+
+        else:
+            await ctx.send("u just bagged 10K useless coins")
+            await ctx.send("God is with u,find a real lottery and go all in")
+
+
+    elif(l[0]==l[1] or l[1]==l[2] or l[0]==l[2]):
+        await ctx.send("U get to keep ur money")
+        await ctx.send("+50 useless coins in ur bank")
+    else:
+          await ctx.send("Hehehe,Better Luck Next Time!")    
+
 custom.run('Token-goes-here')
