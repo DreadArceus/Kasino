@@ -36,7 +36,7 @@ async def p(ctx):
             'money': init_money,
             'loan': 0
         })
-        await ctx.send(f'You have officially registered as a gambler.{"\nOh seems like you are lucky" if init_money == 500 else ""}')
+        await ctx.send(f'You have officially registered as a gambler.\n{"Oh seems like you are lucky" if init_money == 500 else ""}')
 
 
 @custom.command()
