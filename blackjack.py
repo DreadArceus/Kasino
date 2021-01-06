@@ -82,7 +82,7 @@ async def doublep1(ctx):
     await ctx.send("Decided to Double down huh , I dig that\n so now you can no longer hit")
 
 
-client.run('NzgyMTY0NDkyMjc2NTk2NzU3.X8INcg.GQcvOa9f7gh1glBJO88VGfKichc')
+client.run('ENter Token here')
 
 
 
