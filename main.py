@@ -40,7 +40,7 @@ async def h(ctx):
 
 
 @custom.command()
-async def bank(ctx):
+async def bankc(ctx):
     await ctx.send(f'Bank has: {bank.get().to_dict()["money"]}')
 
 
@@ -85,7 +85,7 @@ async def f(ctx, arg1, arg2):  # arg1=coins to be flipped
         else:
             await ctx.send(f'{ctx.author.display_name} your balance has been updated')
 
-        docref.update({'money': temp6})
+        money_transfer(docref,outcome)
         await ctx.send(temp4)
 
     else:
