@@ -2,11 +2,34 @@ import random
 from discord.ext import commands
 import firebase_admin
 from firebase_admin import credentials, firestore
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 cred = credentials.Certificate('./ServiceAccountKey.json')
 app = firebase_admin.initialize_app(cred)
 db = firestore.client()
+bank = db.collection('users').document('bank')
 
+
+def money_transfer(doc_ref, change):
+    old = doc_ref.get().to_dict()['money']
+    reserve = bank.get().to_dict()['money']
+    doc_ref.update({'money': old + change})
+    bank.update({'money': reserve - change})
+
+
+class Blackjack:
+    def __init__(self, card, chance, stand, author, wage):
+        self.card = card
+        self.chance = chance
+        self.stand = stand
+        self.author = author
+        self.wage = wage
+
+
+p1 = Blackjack(0, True, False, None, 0)
+p2 = Blackjack(0, True, False, None, 0)
 
 custom = commands.Bot(command_prefix='!')
 
@@ -14,6 +37,11 @@ custom = commands.Bot(command_prefix='!')
 @custom.command()
 async def h(ctx):
     await ctx.send('The Kasino welcomes you\n!p to register\n!b shows you your balance\n!f "number of coins" "h/T" /creates a coinflip\n!game /shows the grid for pot \n !choose "number of coins" "no. on the grid"/grid guess\n!slot "bid amt" to try the slot machine\nRules:Everyone starts with a balance of 300\nif you get addicted to gambling and lose your shit visit https://www.begambleaware.org')
+
+
+@custom.command()
+async def bankc(ctx):
+    await ctx.send(f'Bank has: {bank.get().to_dict()["money"]}')
 
 
 @custom.command()
@@ -57,7 +85,7 @@ async def f(ctx, arg1, arg2):  # arg1=coins to be flipped
         else:
             await ctx.send(f'{ctx.author.display_name} your balance has been updated')
 
-        docref.update({'money': temp6})
+        money_transfer(docref,outcome)
         await ctx.send(temp4)
 
     else:
@@ -90,7 +118,7 @@ async def choose(ctx, arg11, arg22):  # arg1=coins arg2=no. on the grid arg4=id
     if t <= temp55:
         if a >= 1 and a <= 9:
             if a == b:
-                await ctx.send(f' {e[0]}{e[1]}{e[2]} \n {e[3]}{e[4]}{e[5]} \n {e[6]}{e[7]}{e[8]}')
+                await ctx.send(f' {e[0]}{e[1]}{e[2]} \n{e[3]}{e[4]}{e[5]} \n{e[6]}{e[7]}{e[8]}')
                 await ctx.send(f'{emoji} JACKPOT YOU FOUND THE COIN {emoji}')
 
                 outcome = 9*int(arg11)
@@ -189,4 +217,191 @@ async def slot(ctx, bid):
         await ctx.send("u poor being,ask boss for more coins ")
 
 
-custom.run('token here')
+@custom.command()
+async def blackjack(ctx):
+    await ctx.send("Welcome to BlackJack")
+    if(p1.author == None):
+        p1.author = ctx.author
+        await ctx.send("You are Player One")
+    elif(p2.author == None):
+        if(ctx.author == p1.author):
+            await ctx.send("Wait for second player")
+        else:
+            p2.author = ctx.author
+            await ctx.send("You are Player Two")
+            await ctx.send("If you wanna wager this game type !wager amount")
+    else:
+        await ctx.send("A Game is goin on wait for it to get over")
+
+
+@custom.command()
+async def wager(ctx, amt):
+    amt = int(amt)
+    docrefp1 = db.collection('users').document(f'{p1.author.id}')
+    docp1 = docrefp1.get()
+    balp1 = int(docp1.to_dict()['money'])
+    docrefp2 = db.collection('users').document(f'{p2.author.id}')
+    docp2 = docrefp2.get()
+    balp2 = int(docp2.to_dict()['money'])
+    if(balp1 >= amt and balp2 >= amt):
+        p1.wage = amt
+        p2.wage = amt
+        balp1 -= amt
+        balp2 -= amt
+        docrefp1.update({'money': balp1})
+        docrefp2.update({'money': balp2})
+        await ctx.send("Both have enough money to wager and amount has been deducted")
+    else:
+        if(balp1 < amt):
+            await ctx.send(f"{p1.author.name}, you're broke man :(")
+        else:
+            await ctx.send(f"{p2.author.name}, you're broke man :(")
+
+
+@custom.command()
+async def hit(ctx):
+    if(ctx.author == p1.author):
+        await ctx.send(f"{p1.author.name} decided to hit")
+        rand_count = random.randint(1, 10)
+        if (p1.chance == True and p1.stand == False):
+            p1.card += rand_count
+            await ctx.send(f"You have picked {rand_count}")
+            if(p2.stand == False):
+                p1.chance = False
+            if(p1.card > 21):
+                await ctx.send(f"You have exceeded 21 and have lost \n TAke ThE L ")
+                if(p1.wage != 0):
+                    await ctx.send(f"{ctx.author.name} loses his wager of {p1.wage}")
+                docrefp1 = db.collection('users').document(f'{p1.author.id}')
+                docp1 = docrefp1.get()
+                balp1 = int(docp1.to_dict()['money'])
+                docrefp2 = db.collection('users').document(f'{p2.author.id}')
+                docp2 = docrefp2.get()
+                balp2 = int(docp2.to_dict()['money'])
+                balp2 += 2*p2.wage
+                docrefp1.update({'money': balp1})
+                docrefp2.update({'money': balp2})
+                if(p1.wage != 0):
+                    await ctx.send(f"Wager amount has been added to {p2.author.name}'s account ")
+                p1.card = 0
+                p1.stand = False
+                p1.chance = True
+                p1.author = None
+                p1.card = 0
+                p1.wage = 0
+                p1.stand = False
+                p1.chance = True
+                p2.author = None
+                p2.wage = 0
+            else:
+                p2.chance = True
+                await ctx.send(f"{p1.card} is the current score")
+        else:
+            if(p1.stand == True):
+                await ctx.send("You can no longer hit as you decided to stand")
+            else:
+                await ctx.send("Its not your turn")
+    elif(ctx.author == p2.author):
+        await ctx.send(f"{p2.author.name} decided to hit")
+        rand_count = random.randint(1, 10)
+        if (p2.chance == True and p2.stand == False):
+            p2.card += rand_count
+            await ctx.send(f"You have picked {rand_count}")
+            if(p1.stand == False):
+                p2.chance = False
+            if(p2.card > 21):
+                await ctx.send(f"You have exceeded 21 and have lost \n TAke ThE L ")
+                if(p1.wage != 0):
+                    await ctx.send(f"{ctx.author.name} loses his wager of {p1.wage}")
+                docrefp1 = db.collection('users').document(f'{p1.author.id}')
+                docp1 = docrefp1.get()
+                balp1 = int(docp1.to_dict()['money'])
+                docrefp2 = db.collection('users').document(f'{p2.author.id}')
+                docp2 = docrefp2.get()
+                balp2 = int(docp2.to_dict()['money'])
+                balp1 += 2*p2.wage
+                docrefp1.update({'money': balp1})
+                docrefp2.update({'money': balp2})
+                if(p1.wage != 0):
+                    await ctx.send(f"Wager amount has been added to {p1.author.name}'s account ")
+                p1.card = 0
+                p1.stand = False
+                p1.chance = True
+                p1.author = None
+                p1.wage = 0
+                p2.card = 0
+                p2.stand = False
+                p2.chance = True
+                p2.author = None
+                p2.wage = 0
+            else:
+                p1.chance = True
+                await ctx.send(f"{p2.card} is the current score")
+        else:
+            if(p1.stand == True):
+                await ctx.send("You can no longer hit as you decided to stand")
+            else:
+                await ctx.send("Its not your turn")
+
+
+@custom.command()
+async def stand(ctx):
+
+    if(ctx.author == p1.author):
+        await ctx.send("You have decided to stand")
+        p1.stand = True
+        p2.chance = True
+        if(p2.stand == True):
+            await ctx.send("Both have decided to stand")
+        else:
+            await ctx.send("You can no longer hit.")
+    elif(ctx.author == p2.author):
+        await ctx.send("You have decided to stand")
+        p2.stand = True
+        p1.chance = True
+        if(p1.stand == True):
+            await ctx.send("Both have decided to stand")
+        else:
+            await ctx.send("You can no longer hit.")
+    if(p1.stand == True and p2.stand == True):
+        docrefp1 = db.collection('users').document(f'{p1.author.id}')
+        docp1 = docrefp1.get()
+        balp1 = int(docp1.to_dict()['money'])
+        docrefp2 = db.collection('users').document(f'{p2.author.id}')
+        docp2 = docrefp2.get()
+        balp2 = int(docp2.to_dict()['money'])
+        if(p1.card > p2.card):
+            await ctx.send(f"{p2.author.name} lost  to {p1.author.name}")
+            balp1 += 2*p2.wage
+            docrefp1.update({'money': balp1})
+            docrefp2.update({'money': balp2})
+            if(p1.wage != 0):
+                await ctx.send(f"Wager amount has been added to {p1.author.name}'s account ")
+        elif(p2.card > p1.card):
+            await ctx.send(f"{p1.author.name} lost  to {p2.author.name}")
+            balp2 += 2*p2.wage
+            docrefp1.update({'money': balp1})
+            docrefp2.update({'money': balp2})
+            if(p1.wage != 0):
+                await ctx.send(f"Wager amount has been added to {p2.author.name}'s account ")
+        else:
+            await ctx.send("Match ends in a draw")
+            balp1 += p1.wage
+            balp2 += p2.wage
+            docrefp1.update({'money': balp1})
+            docrefp2.update({'money': balp2})
+            if(p1.wage != 0):
+                await ctx.send("Wager amount has been returned")
+        p1.card = 0
+        p1.stand = False
+        p1.chance = True
+        p1.author = None
+        p1.wage = 0
+        p2.card = 0
+        p2.stand = False
+        p2.chance = True
+        p2.author = None
+        p2.wage = 0
+
+
+custom.run(os.getenv('TOKEN'))
