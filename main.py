@@ -189,4 +189,4 @@ async def slot(ctx, bid):
         await ctx.send("u poor being,ask boss for more coins ")
 
 
-custom.run('NzgyMTY0NDkyMjc2NTk2NzU3.X8INcg.oWYWbG6-liHYG89GIWYfgfGIipU')
+custom.run('token here')
