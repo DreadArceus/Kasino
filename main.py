@@ -5,6 +5,7 @@ from firebase_admin import credentials, firestore
 import os
 from dotenv import load_dotenv
 load_dotenv()
+import discord
 
 cred = credentials.Certificate('./ServiceAccountKey.json')
 app = firebase_admin.initialize_app(cred)
@@ -91,6 +92,29 @@ async def f(ctx, arg1, arg2):  # arg1=coins to be flipped
     else:
         await ctx.send('you really thought that would work?')
 
+@custom.command()
+async def loanplayer(ctx, amt,playername : discord.User):
+    amt=int(amt)
+    print(playername.display_name)
+    print(playername.id)
+    doc_ref = db.collection('users').document(f'{playername.id}')
+    doc_ref2 = db.collection('users').document(f'{ctx.author.id}')
+    
+    doc = doc_ref.get()
+    doc2 = doc_ref2.get()
+    bal1 = int(doc.to_dict()['money'])
+    bal2 = int(doc2.to_dict()['money'])
+    if doc.exists and amt<=bal2:
+        doc_ref.update({ 'money' : bal1+amt  })
+        doc_ref2.update({'money' : bal2-amt })
+        await ctx.send(f'updating blanace of {playername.display_name} and {ctx.author.display_name}')
+    elif doc.exists :
+        await ctx.send(f'insufficient balance')
+    else :
+        await ctx.send(f'user doesnt exist')
+        
+        
+
 
 @custom.command()
 async def game(ctx):
@@ -138,7 +162,7 @@ async def choose(ctx, arg11, arg22):  # arg1=coins arg2=no. on the grid arg4=id
             else:
                 await ctx.send(f'{ctx.author.display_name} your balance has been updated')
 
-            docref.update({'money': temp66})
+            money_transfer(docref,outcome)
 
         else:
             await ctx.send('you really thought that would work?')
@@ -404,4 +428,4 @@ async def stand(ctx):
         p2.wage = 0
 
 
-custom.run(os.getenv('TOKEN'))
+custom.run(os.getenv("TOKEN"))
