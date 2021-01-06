@@ -67,7 +67,6 @@ async def f(ctx, arg1, arg2):  # arg1=coins to be flipped
     else:
         await ctx.send('you really thought that would work?')
 
-
 @custom.command()
 async def game(ctx):
     emoji = '<:python3:788673802300686347>'
@@ -77,48 +76,59 @@ async def game(ctx):
 
 
 @custom.command()
-async def choose(ctx, arg11, arg22, arg44):  # arg1=coins arg2=no. on the grid arg4=id
+async def choose(ctx, arg11, arg22):  # arg1=coins arg2=no. on the grid arg4=id
     hiddenc = random.randint(1, 9)
     a = int(arg22)
     e = [':one:', ':two:', ':three:', ':four:', ':five:',
          ':six:', ':seven:', ':eight:', ':nine:']
-
+    t=int(arg11)
     emoji = '<:python3:788673802300686347>'
     b = hiddenc
     tempvaluuu = e[b-1]
+    docref=db.collection('users').document(f'{ctx.author.id}')
+    doc=docref.get();
+    temp55 = int(doc.to_dict()['money'])
     e[b-1] = ':coin:'
-    if a >= 1 and a <= 9:
-        if a == b:
-            await ctx.send(f' {e[0]}{e[1]}{e[2]} \n {e[3]}{e[4]}{e[5]} \n {e[6]}{e[7]}{e[8]}')
-            await ctx.send(f'{emoji} JACKPOT YOU FOUND THE COIN {emoji}')
+    
+    if t <= temp55:
+        if a >= 1 and a <= 9:
+            if a == b:
+                await ctx.send(f' {e[0]}{e[1]}{e[2]} \n {e[3]}{e[4]}{e[5]} \n {e[6]}{e[7]}{e[8]}')
+                await ctx.send(f'{emoji} JACKPOT YOU FOUND THE COIN {emoji}')
 
-            outcome = 9*int(arg11)
-        else:
+                outcome = 9*int(arg11)
+            else:
 
-            await ctx.send(f' {e[0]}{e[1]}{e[2]} \n {e[3]}{e[4]}{e[5]} \n {e[6]}{e[7]}{e[8]}')
+                await ctx.send(f' {e[0]}{e[1]}{e[2]} \n {e[3]}{e[4]}{e[5]} \n {e[6]}{e[7]}{e[8]}')
+                e[b-1] = tempvaluuu
+                await ctx.send(f'coin was in {e[b-1]}')
+                outcome = -int(arg11)
             e[b-1] = tempvaluuu
-            await ctx.send(f'coin was in {e[b-1]}')
-            outcome = -int(arg11)
-        e[b-1] = tempvaluuu
+            docref=db.collection('users').document(f'{ctx.author.id}')
+            doc=docref.get();
+        
 
-        temp55 = int(coins[int(arg44)])
-        temp66 = (temp55) + int(outcome)  # temp 5 is updated coin values
-        if temp66 >= 1000:
-            await ctx.send(t[int(arg44)] + ' wins the session')
-        elif temp66 == 0:
-            await ctx.send(t[int(arg44)] + ' is out')
+            
+            temp66 = (temp55) + int(outcome)  # temp 5 is updated coin values
+            if temp66 >= 1000:
+                await ctx.send(f'{ctx.author.display_name} wins the session')
+            elif temp66 == 0:
+                await ctx.send(f'{ctx.author.display_name} is out')
+            else:
+                await ctx.send(f'{ctx.author.display_name} your balance has been updated')
+
+            docref.update({ 'money': temp66 })
+
         else:
-            await ctx.send(t[int(arg44)] + ' your balance has been updated')
-
-        coins[int(arg44)] = int(temp66)
-
+            await ctx.send('you really thought that would work?')
     else:
-        await ctx.send('you really thought that would work?')
-
+        await ctx.send('you broke lmao')
 
 @custom.command()
-async def b(ctx, arg):
-    await ctx.send(coins[int(arg)])
-
+async def b(ctx):
+    docref=db.collection('users').document(f'{ctx.author.id}')
+    doc=docref.get()
+    c=int(doc.to_dict()['money'])
+    await ctx.send(c)
 
 custom.run('token here')
