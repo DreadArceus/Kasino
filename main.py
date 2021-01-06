@@ -16,7 +16,7 @@ grid = ['1', '2', '3']
 
 @custom.command()
 async def h(ctx):
-    await ctx.send('The Kasino welcomes you\n!p to register\n!b "your id" /shows you your balance\n!f "number of coins" "h/t" "id" /creates a coinflip\n!g "number of coins" "column" "row" "id"/grid guess\n!i  /shows player names and their ids\nRules:Everyone starts with a balance of 300 and first to 1000 coins wins\nif you get addicted to gambling and lose your shit visit https://www.begambleaware.org')
+    await ctx.send('The Kasino welcomes you\n!p to register\n!b shows you your balance\n!f "number of coins" "h/T" /creates a coinflip\n!game /shows the grid for pot \n !choose "number of coins" "no. on the grid"/grid guess\n Rules:Everyone starts with a balance of 300 \nif you get addicted to gambling and lose your shit visit https://www.begambleaware.org')
 
 
 @custom.command()
@@ -54,9 +54,7 @@ async def f(ctx, arg1, arg2):  # arg1=coins to be flipped
             outcome = -int(arg1)
         temp5 = moneyflip
         temp6 = (temp5) + int(outcome)  # temp 6 is updated coin values
-        if temp6 >= 1000:
-            await ctx.send(f'{ctx.author.display_name} wins the session')
-        elif temp6 == 0:
+        if temp6 == 0:
             await ctx.send(f'{ctx.author.display_name} is out')
         else:
             await ctx.send(f'{ctx.author.display_name} your balance has been updated')
@@ -110,9 +108,7 @@ async def choose(ctx, arg11, arg22):  # arg1=coins arg2=no. on the grid arg4=id
 
             
             temp66 = (temp55) + int(outcome)  # temp 5 is updated coin values
-            if temp66 >= 1000:
-                await ctx.send(f'{ctx.author.display_name} wins the session')
-            elif temp66 == 0:
+            if temp66 == 0:
                 await ctx.send(f'{ctx.author.display_name} is out')
             else:
                 await ctx.send(f'{ctx.author.display_name} your balance has been updated')
