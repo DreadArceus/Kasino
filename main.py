@@ -181,6 +181,7 @@ async def b(ctx):
 @custom.command()
 async def slot(ctx, bid):
     bet = int(bid)
+    outcome=0
     list = ["<:DORIME:791557963282120765>", "<:peepoHappy:791557963679793164>",
             "<:FeelsGeniusMan:788674683687010305>", "<:POGGIES:791557965005324340>", "<:EZ:791557965441138720>"]
     l = []
@@ -209,33 +210,34 @@ async def slot(ctx, bid):
 
         if(l[0] == l[1] and l[1] == l[2] and l[0] == l[2]):
             if(l[0] == "<:DORIME:791557963282120765>"):
-                await ctx.send("congrats,you get 2 times ur bet amount")
-                balance += (bet * 2)
+                await ctx.send("congrats,you get 2 times ur bet amount")  #if win outcome positive
+                outcome= (bet * 2)
 
             elif(l[0] == "<:peepoHappy:791557963679793164>"):
                 await ctx.send("congrats,you get 5 times ur bet amount")
-                balance += (bet * 5)
+                outcome= (bet * 5)
 
             elif(l[0] == "<:FeelsGeniusMan:788674683687010305>"):
-                balance += (bet * 15)
+                outcome= (bet * 15)
                 await ctx.send("congrats,you get 15 times ur bet amount")
 
             elif(l[0] == "<:POGGIES:791557965005324340>"):
-                balance += (bet * 50)
+                outcome= (bet * 50)
                 await ctx.send("congrats,you get 50 times ur bet amount")
 
             else:
-                balance += (bet * 100)
+                outcome= (bet * 100)
                 await ctx.send("FIND A REAL LOTTERY,you get 100 TIMES ur bet amount")
 
         elif(l[0] == l[1] or l[1] == l[2] or l[0] == l[2]):
-            await ctx.send("U get to keep ur money")
-            balance = balance+bet
+            await ctx.send("U get to keep ur money")         #if draw outcome 0
+            outcome =0
         else:
+            outcome=-bet                    # if lose outcome negative
             await ctx.send("Hehehe,Better Luck Next Time!")
 
         await ctx.send(f'{ctx.author.display_name} your balance has been updated')
-        docref.update({'money': balance})
+        money_transfer(docref,outcome)   
 
     else:
         await ctx.send("u poor being,ask boss for more coins ")
