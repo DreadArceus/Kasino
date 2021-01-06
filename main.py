@@ -1,13 +1,14 @@
-
 import random
 from discord.ext import commands
 import firebase_admin
 from firebase_admin import credentials, firestore
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 cred = credentials.Certificate('./ServiceAccountKey.json')
 app = firebase_admin.initialize_app(cred)
 db = firestore.client()
-
 class Blackjack:
     def __init__(self,card,chance,stand,author,wage):
         self.card=card
@@ -100,7 +101,7 @@ async def choose(ctx, arg11, arg22):  # arg1=coins arg2=no. on the grid arg4=id
     if t <= temp55:
         if a >= 1 and a <= 9:
             if a == b:
-                await ctx.send(f' {e[0]}{e[1]}{e[2]} \n {e[3]}{e[4]}{e[5]} \n {e[6]}{e[7]}{e[8]}')
+                await ctx.send(f' {e[0]}{e[1]}{e[2]} \n{e[3]}{e[4]}{e[5]} \n{e[6]}{e[7]}{e[8]}')
                 await ctx.send(f'{emoji} JACKPOT YOU FOUND THE COIN {emoji}')
 
                 outcome = 9*int(arg11)
@@ -248,7 +249,9 @@ async def hit(ctx):
             if(p2.stand==False):
                 p1.chance=False
             if(p1.card>21):
-                await ctx.send(f"You have exceeded 21 and have lost \n TAke ThE L \n {ctx.author.name} loses his wager of {p1.wage}")
+                await ctx.send(f"You have exceeded 21 and have lost \n TAke ThE L ")
+                if(p1.wage!=0):
+                    await ctx.send(f"{ctx.author.name} loses his wager of {p1.wage}")
                 docrefp1 = db.collection('users').document(f'{p1.author.id}')
                 docp1 = docrefp1.get()
                 balp1 = int(docp1.to_dict()['money'])
@@ -258,7 +261,8 @@ async def hit(ctx):
                 balp2+=2*p2.wage
                 docrefp1.update({'money': balp1})
                 docrefp2.update({'money': balp2})
-                await ctx.send(f"Wager amount has been added to {p2.author.name}'s account ")
+                if(p1.wage!=0):
+                    await ctx.send(f"Wager amount has been added to {p2.author.name}'s account ")
                 p1.card=0
                 p1.stand=False
                 p1.chance=True
@@ -286,7 +290,9 @@ async def hit(ctx):
             if(p1.stand==False):
                 p2.chance=False
             if(p2.card>21):
-                await ctx.send(f"You have exceeded 21 and have lost \n TAke ThE L \n {ctx.author.name} loses")
+                await ctx.send(f"You have exceeded 21 and have lost \n TAke ThE L ")
+                if(p1.wage!=0):
+                    await ctx.send(f"{ctx.author.name} loses his wager of {p1.wage}")
                 docrefp1 = db.collection('users').document(f'{p1.author.id}')
                 docp1 = docrefp1.get()
                 balp1 = int(docp1.to_dict()['money'])
@@ -296,7 +302,8 @@ async def hit(ctx):
                 balp1+=2*p2.wage
                 docrefp1.update({'money': balp1})
                 docrefp2.update({'money': balp2})
-                await ctx.send(f"Wager amount has been added to {p1.author.name}'s account ")
+                if(p1.wage!=0):
+                    await ctx.send(f"Wager amount has been added to {p1.author.name}'s account ")
                 p1.card=0
                 p1.stand=False
                 p1.chance=True
@@ -344,24 +351,27 @@ async def stand(ctx):
         docp2 = docrefp2.get()
         balp2 = int(docp2.to_dict()['money'])
         if(p1.card>p2.card):
-            await ctx.send(f"{p2.author.name} lost {p2.wage} coins to {p1.author.name}")
+            await ctx.send(f"{p2.author.name} lost  to {p1.author.name}")
             balp1+=2*p2.wage
             docrefp1.update({'money': balp1})
             docrefp2.update({'money': balp2})        
-            await ctx.send(f"Wager amount has been added to {p1.author.name}'s account ")      
+            if(p1.wage!=0):
+                await ctx.send(f"Wager amount has been added to {p1.author.name}'s account ")      
         elif(p2.card>p1.card):
-            await ctx.send(f"{p1.author.name} lost {p2.wage} coins to {p2.author.name}")
+            await ctx.send(f"{p1.author.name} lost  to {p2.author.name}")
             balp2+=2*p2.wage 
             docrefp1.update({'money': balp1})
             docrefp2.update({'money': balp2})           
-            await ctx.send(f"Wager amount has been added to {p2.author.name}'s account ")      
+            if(p1.wage!=0):
+                await ctx.send(f"Wager amount has been added to {p2.author.name}'s account ")      
         else:
             await ctx.send("Match ends in a draw")
             balp1+=p1.wage
             balp2+=p2.wage
             docrefp1.update({'money': balp1})
             docrefp2.update({'money': balp2})
-            await ctx.send("Wager amount has been returned")
+            if(p1.wage!=0):
+                await ctx.send("Wager amount has been returned")
         p1.card=0
         p1.stand=False
         p1.chance=True
@@ -373,4 +383,4 @@ async def stand(ctx):
         p2.author=None
         p2.wage=0
 
-custom.run('NzgyMTY0NDkyMjc2NTk2NzU3.X8INcg._ZJ2Tsrl7KkP1HmWCoJQI7G6gig')
+custom.run(os.getenv("DTOKEN"))
