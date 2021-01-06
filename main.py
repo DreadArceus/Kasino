@@ -122,4 +122,71 @@ async def b(ctx, arg):
 
 
 
+@custom.command()
+async def slot(ctx,bid):
+    bet=int(bid)
+    list=["<:DORIME:791557963282120765>","<:peepoHappy:791557963679793164>",
+    "<:FeelsGeniusMan:788674683687010305>","<:POGGIES:791557965005324340>","<:EZ:791557965441138720>"]
+    l=[]
+    docref=db.collection('users').document(f'{ctx.author.id}')
+    doc=docref.get();
+    balance=int(doc.to_dict()['money'])
+
+    if(balance>=bet and bet>0):
+        balance=balance-bet
+        for i in range(3):
+            a=random.randint(1,100)
+            if(a>=1 and a<=30):
+                l.append(list[0])
+            elif(a>30 and a<=55):
+                l.append(list[1])
+            elif(a>55 and a<=75):
+                l.append(list[2])
+            elif(a>75 and a<=90):
+                l.append(list[3])
+            elif(a>90 and a<=100):
+                l.append(list[4])
+    
+        s=l[0]+l[1]+l[2]
+        await ctx.send("u rolled--")
+        await ctx.send(s)
+
+        if(l[0]==l[1] and l[1]==l[2] and l[0]==l[2]):
+            if(l[0]=="<:DORIME:791557963282120765>"):
+                 await ctx.send("congrats,you get 2 times ur bet amount")
+                 balance+=(bet * 2)
+
+            elif(l[0]=="<:peepoHappy:791557963679793164>"):
+                  await ctx.send("congrats,you get 5 times ur bet amount")
+                  balance+=(bet * 5)
+
+            elif(l[0]=="<:FeelsGeniusMan:788674683687010305>"):
+                  balance+=(bet * 15)
+                  await ctx.send("congrats,you get 15 times ur bet amount")
+
+            elif(l[0]=="<:POGGIES:791557965005324340>"):
+                  balance+=(bet * 50)
+                  await ctx.send("congrats,you get 50 times ur bet amount")
+
+            else:
+                 balance+=(bet * 100)
+                 await ctx.send("FIND A REAL LOTTERY,you get 100 TIMES ur bet amount")
+
+        elif(l[0]==l[1] or l[1]==l[2] or l[0]==l[2]):
+            await ctx.send("U get to keep ur money")
+            balance=balance+bet
+        else:
+          await ctx.send("Hehehe,Better Luck Next Time!")
+       
+        await ctx.send(f'{ctx.author.display_name} your balance has been updated')      
+        docref.update({ 'money': balance })
+
+
+    else:
+        await ctx.send("u poor being,ask boss for more coins ")
+
+
+
+
+
 custom.run('token here')
