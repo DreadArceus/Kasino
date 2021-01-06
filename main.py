@@ -40,10 +40,10 @@ async def p(ctx):
 @custom.command()
 async def f(ctx, arg1, arg2):  # arg1=coins to be flipped
     temp3 = random.choice(c)
-    docref=db.collection('users').document(f'{ctx.author.id}')
-    doc=docref.get();
+    docref = db.collection('users').document(f'{ctx.author.id}')
+    doc = docref.get()
     moneyflip = int(doc.to_dict()['money'])
-    if (moneyflip - int(arg1)) >= 0:
+    if (moneyflip - int(arg1)) >= 0 and int(arg1) > 0:
 
         if (temp3 == arg2):
             temp4 = 'you won the flip, coins are added to your balance'
@@ -61,7 +61,7 @@ async def f(ctx, arg1, arg2):  # arg1=coins to be flipped
         else:
             await ctx.send(f'{ctx.author.display_name} your balance has been updated')
 
-        docref.update({ 'money': temp6})
+        docref.update({'money': temp6})
         await ctx.send(temp4)
 
     else:
@@ -119,7 +119,6 @@ async def choose(ctx, arg11, arg22, arg44):  # arg1=coins arg2=no. on the grid a
 @custom.command()
 async def b(ctx, arg):
     await ctx.send(coins[int(arg)])
-
 
 
 custom.run('token here')
