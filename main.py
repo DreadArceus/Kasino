@@ -2,6 +2,9 @@ import random
 from discord.ext import commands
 import firebase_admin
 from firebase_admin import credentials, firestore
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 cred = credentials.Certificate('./ServiceAccountKey.json')
 app = firebase_admin.initialize_app(cred)
@@ -90,7 +93,7 @@ async def choose(ctx, arg11, arg22):  # arg1=coins arg2=no. on the grid arg4=id
     if t <= temp55:
         if a >= 1 and a <= 9:
             if a == b:
-                await ctx.send(f' {e[0]}{e[1]}{e[2]} \n {e[3]}{e[4]}{e[5]} \n {e[6]}{e[7]}{e[8]}')
+                await ctx.send(f' {e[0]}{e[1]}{e[2]} \n{e[3]}{e[4]}{e[5]} \n{e[6]}{e[7]}{e[8]}')
                 await ctx.send(f'{emoji} JACKPOT YOU FOUND THE COIN {emoji}')
 
                 outcome = 9*int(arg11)
@@ -189,4 +192,4 @@ async def slot(ctx, bid):
         await ctx.send("u poor being,ask boss for more coins ")
 
 
-custom.run('token here')
+custom.run(os.getenv(TOKEN))
