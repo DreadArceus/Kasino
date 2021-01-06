@@ -10,9 +10,7 @@ db = firestore.client()
 
 custom = commands.Bot(command_prefix='!')
 
-coins = ['ez']  # here are the coins
 c = ['h', 't']
-t = ['following blocks contain player names and their ids is the index ']
 grid = ['1', '2', '3']
 
 
@@ -40,9 +38,12 @@ async def p(ctx):
 
 
 @custom.command()
-async def f(ctx, arg1, arg2, arg3):  # arg1=coins arg3=id
+async def f(ctx, arg1, arg2):  # arg1=coins to be flipped
     temp3 = random.choice(c)
-    if (int(coins[int(arg3)]) - int(arg1)) >= 0:
+    docref=db.collection('users').document(f'{ctx.author.id}')
+    doc=docref.get();
+    moneyflip = int(doc.to_dict()['money'])
+    if (moneyflip - int(arg1)) >= 0:
 
         if (temp3 == arg2):
             temp4 = 'you won the flip, coins are added to your balance'
@@ -51,16 +52,16 @@ async def f(ctx, arg1, arg2, arg3):  # arg1=coins arg3=id
         else:
             temp4 = 'scammed'
             outcome = -int(arg1)
-        temp5 = int(coins[int(arg3)])
-        temp6 = (temp5) + int(outcome)  # temp 5 is updated coin values
+        temp5 = moneyflip
+        temp6 = (temp5) + int(outcome)  # temp 6 is updated coin values
         if temp6 >= 1000:
-            await ctx.send(t[int(arg3)] + ' wins the session')
+            await ctx.send(f'{ctx.author.display_name} wins the session')
         elif temp6 == 0:
-            await ctx.send(t[int(arg3)] + ' is out')
+            await ctx.send(f'{ctx.author.display_name} is out')
         else:
-            await ctx.send(t[int(arg3)] + ' your balance has been updated')
+            await ctx.send(f'{ctx.author.display_name} your balance has been updated')
 
-        coins[int(arg3)] = int(temp6)
+        docref.update({ 'money': temp6})
         await ctx.send(temp4)
 
     else:
@@ -120,8 +121,5 @@ async def b(ctx, arg):
     await ctx.send(coins[int(arg)])
 
 
-@custom.command()
-async def i(ctx):
-    await ctx.send(t)
 
 custom.run('token here')
