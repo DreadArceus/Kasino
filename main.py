@@ -9,6 +9,7 @@ load_dotenv()
 cred = credentials.Certificate('./ServiceAccountKey.json')
 app = firebase_admin.initialize_app(cred)
 db = firestore.client()
+
 class Blackjack:
     def __init__(self,card,chance,stand,author,wage):
         self.card=card
@@ -198,6 +199,7 @@ async def slot(ctx, bid):
 
     else:
         await ctx.send("u poor being,ask boss for more coins ")
+
 #blackjack code
 @custom.command()
 async def blackjack(ctx):
@@ -383,4 +385,8 @@ async def stand(ctx):
         p2.author=None
         p2.wage=0
 
-custom.run(os.getenv("DTOKEN"))
+
+
+
+custom.run(os.getenv(TOKEN))
+
