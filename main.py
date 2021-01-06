@@ -2,6 +2,9 @@ import random
 from discord.ext import commands
 import firebase_admin
 from firebase_admin import credentials, firestore
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 cred = credentials.Certificate('./ServiceAccountKey.json')
 app = firebase_admin.initialize_app(cred)
@@ -189,4 +192,4 @@ async def slot(ctx, bid):
         await ctx.send("u poor being,ask boss for more coins ")
 
 
-custom.run('token here')
+custom.run(os.getenv('DTOKEN'))
