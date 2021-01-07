@@ -186,30 +186,30 @@ async def d(ctx):
     doc=docref.get()
     balance=int(doc.to_dict()['money'])
     await ctx.send('The dice rools:-')
-    await ctx.send(file=discord.File('tenor.gif'))
+    await ctx.send(file=discord.File('https://media.tenor.com/images/957ee523daeb810fc31bee928e8de5df/tenor.gif'))
     await ctx.send(i+1)
     if (m>=0 and m<=100):
         await ctx.send('Heres your little penny <:peepoHappy:791557963679793164>')
         await ctx.send(m)
         balance=balance+m
     elif (m>100 and m<500):
-        await ctx.send('WOO looks like u r lucky day <:EZ:>')
+        await ctx.send('WOO looks like u r lucky day <:EZ:791557965441138720>')
         await ctx.send(m)
         balance=balance+m
     elif m>500:
-        await ctx.send('Damnn boi RICHH :POGGIES:')
+        await ctx.send('Damnn boi RICHH <:POGGIES:791557965005324340>')
         await ctx.send(m)
         balance=balance+m
     elif (m<0 and m>-100):
-        await ctx.send('Hehe U got robbed :KEKW:')
+        await ctx.send('Hehe U got robbed <:KEKW:788673801184477224>')
         await ctx.send(m)
         balance=balance+m
     elif (m<-100 and m>-500):
-        await ctx.send('Fuk off bitch u dead fam :PepeLaugh:')
+        await ctx.send('Fuk off bitch u dead fam <:PepeLaugh:788673802854334494>')
         await ctx.send(m)
         balance=balance+m
     elif m<-500:
-        await ctx.send('Someone call Logan, Dead body reported :DORIME:791557963282120765')
+        await ctx.send('Someone call Logan, Dead body reported <:DORIME:791557963282120765>')
         await ctx.send(m)
         balance=balance+m
     docref.update({ 'money': balance })    
