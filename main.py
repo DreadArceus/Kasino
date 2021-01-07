@@ -193,23 +193,23 @@ async def d(ctx):
         await ctx.send(m)
         balance=balance+m
     elif (m>100 and m<500):
-        await ctx.send('WOO looks like u r lucky day <:EZ:>')
+        await ctx.send('WOO looks like u r lucky day <:EZ:791557965441138720>')
         await ctx.send(m)
         balance=balance+m
     elif m>500:
-        await ctx.send('Damnn boi RICHH :POGGIES:')
+        await ctx.send('Damnn boi RICHH <:POGGIES:791557965005324340>')
         await ctx.send(m)
         balance=balance+m
     elif (m<0 and m>-100):
-        await ctx.send('Hehe U got robbed :KEKW:')
+        await ctx.send('Hehe U got robbed <:DORIME:791557963282120765>')
         await ctx.send(m)
         balance=balance+m
     elif (m<-100 and m>-500):
-        await ctx.send('Fuk off bitch u dead fam :PepeLaugh:')
+        await ctx.send('Fuk off bitch u dead fam <:DORIME:791557963282120765>')
         await ctx.send(m)
         balance=balance+m
     elif m<-500:
-        await ctx.send('Someone call Logan, Dead body reported :DORIME:791557963282120765')
+        await ctx.send('Someone call Logan, Dead body reported <:DORIME:791557963282120765>')
         await ctx.send(m)
         balance=balance+m
     docref.update({ 'money': balance })    
