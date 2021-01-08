@@ -179,7 +179,23 @@ async def b(ctx):
 
 @custom.command()
 async def d(ctx):
-    s=[random.randint(-1000,1000),random.randint(-1000,1000),random.randint(-1000,1000),random.randint(-1000,1000),random.randint(-1000,1000),random.randint(-1000,1000)]
+    await ctx.send('Select 1 if u are a noob Prize range 1000 to -1000')
+    await ctx.send('Select 2 if u are a Boss Prize range 5000 to -5000')
+    await ctx.send('Select 3 if u are a MENIAC Prize range 10000 to -10000')
+    await ctx.send('Select 4 if u....just DONT DO IT  Prize range 1000000 to -1000000')
+@custom.command()
+async def select(ctx,arg):
+    if int(arg)==1:
+        s=[random.randint(-1000,1000),random.randint(-1000,1000),random.randint(-1000,1000),random.randint(-1000,1000),random.randint(-1000,1000),random.randint(-1000,1000)]
+    elif int(arg)==2:
+        s=[random.randint(-5000,5000),random.randint(-5000,5000),random.randint(-5000,5000),random.randint(-5000,1000),random.randint(-5000,5000),random.randint(-5000,50000)]
+    elif int(arg)==3:
+        s=[random.randint(-10000,10000),random.randint(-10000,10000),random.randint(-10000,10000),random.randint(-10000,10000),random.randint(-10000,10000),random.randint(-10000,10000)]
+    elif int(arg)==4:
+        s=[random.randint(-1000000,1000000),random.randint(-1000000,1000000),random.randint(-1000000,1000000),random.randint(-1000000,1000000),random.randint(-1000000,1000000),random.randint(-1000000,1000000)]
+    else:
+        await ctx.send('GANJA GANJA')
+    i = random.randint(0,5)
     i = random.randint(0,5)
     m=s[i]
     docref=db.collection('users').document(f'{ctx.author.id}')
@@ -188,28 +204,28 @@ async def d(ctx):
     await ctx.send('The dice rools:-')
     await ctx.send(file=discord.File('tenor.gif'))
     await ctx.send(i+1)
-    if (m>=0 and m<=100):
+    if (m>=0 and m<=1000):
         await ctx.send('Heres your little penny <:peepoHappy:791557963679793164>')
         await ctx.send(m)
         balance=balance+m
-    elif (m>100 and m<500):
-        await ctx.send('WOO looks like u r lucky day <:EZ:>')
+    elif (m>1000 and m<5000):
+        await ctx.send('WOO looks like u r lucky day <:EZ:791557965441138720>')
         await ctx.send(m)
         balance=balance+m
-    elif m>500:
-        await ctx.send('Damnn boi RICHH :POGGIES:')
+    elif m>5000:
+        await ctx.send('Damnn boi RICHH <:POGGIES:791557965005324340>')
         await ctx.send(m)
         balance=balance+m
-    elif (m<0 and m>-100):
-        await ctx.send('Hehe U got robbed :KEKW:')
+    elif (m<0 and m>-1000):
+        await ctx.send('Hehe U got robbed <:DORIME:791557963282120765>')
         await ctx.send(m)
         balance=balance+m
-    elif (m<-100 and m>-500):
-        await ctx.send('Fuk off bitch u dead fam :PepeLaugh:')
+    elif (m<-1000 and m>-5000):
+        await ctx.send('Fuk off bitch u dead fam <:DORIME:791557963282120765>')
         await ctx.send(m)
         balance=balance+m
-    elif m<-500:
-        await ctx.send('Someone call Logan, Dead body reported :DORIME:791557963282120765')
+    elif m<-5000:
+        await ctx.send('Someone call Logan, Dead body reported <:DORIME:791557963282120765>')
         await ctx.send(m)
         balance=balance+m
     docref.update({ 'money': balance })    
